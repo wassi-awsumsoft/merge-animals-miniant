@@ -1,5 +1,5 @@
+.git
 .vercel
-.DS_Store
 node_modules
-npm-debug.log*
 game
+npm-debug.log*

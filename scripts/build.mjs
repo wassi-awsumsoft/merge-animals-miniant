@@ -1,8 +1,7 @@
-import { cp, mkdir, rm } from "node:fs/promises";
+import { access, cp, mkdir, readdir } from "node:fs/promises";
 import { join } from "node:path";
-import { fileURLToPath } from "node:url";
 
-const root = fileURLToPath(new URL("..", import.meta.url));
+const root = process.cwd();
 const output = join(root, "game", "dist");
 
 const entries = [
@@ -29,7 +28,6 @@ const entries = [
 	"style.css"
 ];
 
-await rm(output, { recursive: true, force: true });
 await mkdir(output, { recursive: true });
 
 for (const entry of entries) {
@@ -39,4 +37,10 @@ for (const entry of entries) {
 	});
 }
 
-console.log(`Static MiniAnt build written to ${output}`);
+await access(join(output, "index.html"));
+const outputFiles = await readdir(output);
+if (outputFiles.length === 0) {
+	throw new Error(`Static MiniAnt build output is empty: ${output}`);
+}
+
+console.log(`Static MiniAnt build written to game/dist (${outputFiles.length} top-level entries)`);
